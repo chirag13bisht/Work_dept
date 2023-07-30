@@ -15,7 +15,7 @@ const Signup = () => {
 
     Axios.defaults.withCredentials = true;
 
-    const submitSignup = (e) => {
+    const submitSignup = async(e) => {
         e.preventDefault();
         if(name.length===0|| username.length===0|| pass.length===0 || department.length===0 || confirmpass.length===0 ){
             seterror(true);
@@ -25,7 +25,7 @@ const Signup = () => {
         }
         
         else {
-            Axios.post('http://localhost:3002/api/signup', { username: username, name: name, pass: pass, department: department })
+           await Axios.post('http://localhost:3002/api/signup', { username: username, name: name, pass: pass, department: department })
            .then(res=>{
             if(res.data === "Error"){
                 window.alert("username already exist")
@@ -42,7 +42,8 @@ const Signup = () => {
     }
     return (
         <>
-            <div className='bg-[#055C9D]  py-3' >
+            <div className='bg-gradient-to-r
+                 from-[#012f66] to-[#0568a1]  py-3' >
                 <img className="m-5 px-20" src='/Images/drdo_logo.png' alt='logo' />
             </div>
             <div className='relative'>

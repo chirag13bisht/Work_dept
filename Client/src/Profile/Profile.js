@@ -4,28 +4,35 @@ import Axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+
 const Profile = () => {
     const Navigate = useNavigate()
     Axios.defaults.withCredentials = true;
     const [data, setdata] = useState("")
     const [No, setNo] = useState("")
     useEffect(() => {
-        Axios.get('http://localhost:3002')
+        const userdata = async() =>{
+            await Axios.get('http://localhost:3002')
             .then((res) => {
                 setdata(res.data[0])
             })
+        }
+       userdata();
     }, []);
 
     useEffect(() => {
-        Axios.get('http://localhost:3002/complaint_data')
+        const complaintdata = async() =>{
+          await  Axios.get('http://localhost:3002/complaint_data')
             .then((res) => {
                 setNo(res.data.length)
             })
+        }
+        complaintdata();
     }, []);
 
-    const handleLogout = (e) => {
+    const handleLogout = async(e) => {
         e.preventDefault();
-        Axios.get('http://localhost:3002/logout')
+        await Axios.get('http://localhost:3002/logout')
             .then(res => {
                 if (res.status === 200) {
                     window.alert("logout");
@@ -35,10 +42,10 @@ const Profile = () => {
     }
 
     return (
-        <div>
+        <div className=' '>
             <Nav />
-            <div className='mt-5'>
-                <div className=' mx-auto max-w-lg'>
+            <div className='mt-10'>
+                <div className=' mx-auto max-w-md sm:max-w-lg'>
                     <div class="bg-white shadow-2xl rounded px-8 pt-6 pb-8 mb-4 ">
 
                         <div className='mb-2 '>
@@ -71,6 +78,7 @@ const Profile = () => {
                                 </div>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
 

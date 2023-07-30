@@ -1,19 +1,10 @@
 import React from 'react'
 import Nav from '../Components/Nav'
 import  Axios from 'axios'
-import { useEffect ,useState} from 'react'
+import { useState} from 'react'
 
 
 const Main = () => {
-
-    Axios.defaults.withCredentials = true;
-    const [data, setdata] = useState("")
-    useEffect(() => {
-        Axios.get('http://localhost:3002')
-        .then((res) =>{
-            setdata(res.data[0])
-        } ) 
-        });
 
    
     const [complaint, setcomplaint] = useState("");
@@ -23,12 +14,12 @@ const Main = () => {
 
     Axios.defaults.withCredentials = true;
 
-    const submitComplaint = () => {
+    const submitComplaint = async() => {
         if(complaint.length===0 || complaint_type.length===0){
             seterror(true);
         }    
         else {
-            Axios.post('http://localhost:3002/complaint', { complaint: complaint, complaint_type: complaint_type,complaint_id:complaint_id})
+           await Axios.post('http://localhost:3002/complaint', { complaint: complaint, complaint_type: complaint_type,complaint_id:complaint_id})
            .then(res=>{
             if(res.data === "Error"){
                 window.alert("Complaint not filled properly")
@@ -58,37 +49,10 @@ const Main = () => {
     return (
         <>
             <Nav />
-            <div className='justify-center  mt-5 '>
-                <div className='float-left w-1/2'>
-                    <div className=' mx-auto max-w-sm'>
-                        <div class="bg-white shadow-2xl rounded px-8 pt-6 pb-8 mb-4 ">
-                            <div className='mb-10 text-center'>
-                                <h1 className='block text-gray-700 font-bold text-xl'>
-                                    User Information
-                                </h1>
-                            </div>
-                            <div className='flex justify-between mb-4'>
-                                <label>Name</label>
-                         
-                                <span>{data.name}</span>
-                            </div>
-                            <div className='flex justify-between mb-4'>
-                                <label>Username</label>
-                              
-                                <span>{data.username}</span>
-                            </div>
-                            <div className='flex justify-between mb-4'>
-                                <label>Department</label>
-                               
-                                <span>{data.department}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+           
+                <div className='w-full mt-10'>
 
-                <div className='w-1/2 float-right'>
-
-                    <div class="max-w-md mx-auto">
+                    <div class="max-w-md sm:max-w-lg mx-auto">
                         <form class="bg-white shadow-2xl rounded px-8 pt-6 pb-8 mb-4">
                             <div className='mb-10 text-center'>
                                 <h1 className='block text-gray-700 font-bold text-xl' >Enter Your Complaint</h1>
@@ -122,7 +86,6 @@ const Main = () => {
                     </div>
 
                 </div>
-            </div>
 
         </>
     )

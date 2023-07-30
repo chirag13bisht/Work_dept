@@ -10,16 +10,17 @@ const Login = () => {
     const [username, setusername] = useState("");
     const [pass, setpass] = useState("");
     const [error, seterror] = useState(false);
+   
 
     Axios.defaults.withCredentials = true;
 
-    const submitLogin = (e) => {
+    const submitLogin = async(e) => {
         e.preventDefault();
         if(username.length===0|| pass.length===0 ){
             seterror(true);
         }
         else {
-            Axios.post('http://localhost:3002/api/login', { username: username,  pass: pass, })
+           await Axios.post('http://localhost:3002/api/login', { username: username,  pass: pass, })
            .then(res=>{
             if(res.data.message){
                 if(res.data.message==="Wrong username/password"){
@@ -30,9 +31,9 @@ const Login = () => {
             }
         }
             else{
-        
+               
                 window.alert("LogIn successfully")
-                navigate('/main')  
+                navigate('/profile')  
             }
          
            })
@@ -42,7 +43,8 @@ const Login = () => {
 
   return (
     <>
-      <div className='bg-[#055C9D]  py-3' >
+      <div className='bg-gradient-to-r
+                 from-[#012f66] to-[#0568a1]  py-3' >
         <img className="m-5 px-20" src='/Images/drdo_logo.png' alt='logo' />
       </div>
       <div className='relative'>
@@ -101,3 +103,6 @@ const Login = () => {
 }
 
 export default Login
+
+
+
