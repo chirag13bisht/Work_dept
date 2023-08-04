@@ -2,11 +2,13 @@ import React from 'react'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Axios from 'axios';
+import useAuth from '../Components/useAuth';
 
 
 const Login = () => {
 
     const navigate = useNavigate();
+    const { setAuth } = useAuth();
     const [username, setusername] = useState("");
     const [pass, setpass] = useState("");
     const [error, seterror] = useState(false);
@@ -14,32 +16,35 @@ const Login = () => {
 
     Axios.defaults.withCredentials = true;
 
-    const submitLogin = async(e) => {
+    const submitLogin = async (e) => {
         e.preventDefault();
-        if(username.length===0|| pass.length===0 ){
-            seterror(true);
-        }
-        else {
-           await Axios.post('http://localhost:3002/api/login', { username: username,  pass: pass, })
-           .then(res=>{
-            if(res.data.message){
-                if(res.data.message==="Wrong username/password"){
-                    alert("wrong password")
-                }
-                else{
-                    alert("no user existed")
+        if (username.length === 0 || pass.length === 0) {
+          seterror(true);
+        } else {
+          try {
+            const response = await Axios.post('http://localhost:3002/api/login', {
+              username: username,
+              pass: pass,
+            });
+            if (response.data.message) {
+              if (response.data.message === 'Wrong username/password') {
+                alert('Wrong password');
+              } else {
+                alert('No user exists');
+              }
+            } else {
+              const user = response.data[0];
+              user.role = [user.role]; 
+              setAuth(user);
+              window.alert('LogIn successfully');
+              navigate('/profile');
             }
+          } catch (error) {
+            console.log('Error during login:', error);
+            alert('Error during login. Please try again later.');
+          }
         }
-            else{
-               
-                window.alert("LogIn successfully")
-                navigate('/profile')  
-            }
-         
-           })
-           .catch(error => console.log(error));  
-        }
-    }
+      };
 
   return (
     <>
@@ -55,10 +60,10 @@ const Login = () => {
             
             <form  className=" bg-white shadow-2xl rounded px-8 pt-6 pb-8 mb-4">
                 <div className="justify-between items-center mb-8 ">
-                    <h className="text-center block text-3xl text-gray-800 font-medium">LOG IN</h>
+                    <h1 className="text-center block text-3xl text-gray-800 font-medium">LOG IN</h1>
                 </div>
                  
-                <div class="mb-4">
+                <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
                         Username
                     </label>
@@ -66,26 +71,26 @@ const Login = () => {
                             setusername(e.target.value)
                         }}
                     placeholder='Username'
-                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" />
+                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" />
                 {error &&username.length<=0?<label className='text-red-500 text-sm px-2 '>Username cannot be empty</label>:""}
                 </div>
-                <div class="mb-6">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" >
+                <div className="mb-6">
+                    <label className="block text-gray-700 text-sm font-bold mb-2" >
                         Password
                     </label>
                     <input onChange={(e) => {
                             setpass(e.target.value)
                         }}
                     placeholder='Password'
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" type="password" />
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" type="password" />
                 {error &&pass.length<=0?<label className='text-red-500 text-sm px-2 '>Password cannot be empty</label>:""}
                 </div>
-                <div class="flex items-center justify-between">
+                <div className="flex items-center justify-between">
                     <button onClick={submitLogin}
-                    class="bg-[#055C9D] hover:bg-blue-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+                    className="bg-blue-500 py-2 px-4 border-2 rounded-md shadow-2xl text-white  transition ease-in-out delay-150  hover:scale-110 hover:bg-green-500 duration-300 ... focus:outline-none focus:shadow-outline" type="button">
                         Log In
                     </button>
-                    <a class="inline-block align-baseline  text-sm text-blue-500 hover:text-blue-800" href='/Signup' >
+                    <a className="inline-block align-baseline  text-sm text-blue-500 hover:text-blue-800" href='/Signup' >
                         Don't have an account?
                     </a>
                 </div>

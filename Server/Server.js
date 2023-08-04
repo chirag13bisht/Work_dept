@@ -97,6 +97,7 @@ const verifyUser = (req, res, next) => {
     const token = req.cookies.token;
     if (!token) {
         return res.json({ message: "not auth" })
+        
     }
     else {
         jwt.verify(token, "jwt-secret-key", (err, decoded) => {
@@ -121,7 +122,6 @@ app.get('/', verifyUser, (req, res) => {
         }
         if (data) {
             return res.send(data)
-
 
         };
     })
@@ -254,8 +254,9 @@ app.post('/assigned/:complaint_id', (req, res) => {
 app.put('/assignedstate/:complaint_id', (req, res) => {
     const complaint_id = req.params.complaint_id
     const newstate = req.body.newstate
-
-    db.query("UPDATE complaints SET state=? WHERE complaint_id=?", [newstate,complaint_id], (err, data) => {
+    const complete_date = req.body.date
+    console.log(newstate)
+    db.query("UPDATE complaints SET state=?,complete_date=? WHERE complaint_id=?", [newstate,complete_date,complaint_id], (err, data) => {
         if (err) {
             console.log(err)
             return res.json("Error")

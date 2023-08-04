@@ -1,36 +1,49 @@
-import React from 'react'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import Login from './Login/Login'
-import Signup from './Signup/Signup'
-import Main from './Main/Main'
-import Status from './Status/Status'
-import Summary from './Summary/Summary'
-import Profile from './Profile/Profile'
-import Example from './Components/N'
-import Feedbacks from './Feedbacks/Feedbacks'
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
+import Login from './Login/Login';
+import Signup from './Signup/Signup';
+import Main from './Main/Main';
+import Status from './Status/Status';
+import Summary from './Summary/Summary';
+import Profile from './Profile/Profile';
+
+import Feedbacks from './Feedbacks/Feedbacks';
+import ErrorPage from './Error/ErrorPage';
+import Unauthorized from './Components/Unauthorized'
+import RequireAuth from './Components/RequireAuth';
 
 const App = () => {
-  
-  
+  const ROLES = {
+    'User':"General",
+    'Admin':"ADMIN"
+  }
+
+
   return (
     <>
-      <Router>
-     
-        <Routes>
-          <Route path='/' element={<Login />}></Route>
-          <Route path='/Signup' element={<Signup />}></Route>
-          <Route path='/Main' element={<Main />}></Route>
-          <Route path='/Status/:complaint_id' element={<Status />}></Route>
-          <Route path='/Summary' element={<Summary />}></Route>
-          <Route path='/Profile' element={<Profile />}></Route>
-          <Route path='/Feedbacks' element={<Feedbacks />}></Route> 
-          <Route path='/N' element={<Example />}></Route>
-        </Routes>
-      
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/Signup" element={<Signup />} />
+        <Route path="/Unauthorized" element={<Unauthorized />} />
 
-      </Router>
+        
+        <Route element={<RequireAuth allowedRoles={[ROLES.User,ROLES.Admin]}/>}>
+        <Route path="/main" element={<Main />} />
+        <Route path="/status/:complaint_id" element={<Status />} />
+        <Route path="/summary" element={<Summary />} />
+        <Route path="/profile" element={<Profile />} />
+        
+       
+        </Route>
+        <Route element={<RequireAuth allowedRoles={[ROLES.Admin]}/>}>
+        <Route path="/feedbacks" element={<Feedbacks />} />
+        </Route>
+
+        <Route path="*" element={<ErrorPage />} />
+      </Routes>
+
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;

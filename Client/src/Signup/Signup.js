@@ -15,31 +15,39 @@ const Signup = () => {
 
     Axios.defaults.withCredentials = true;
 
-    const submitSignup = async(e) => {
+    const submitSignup = async (e) => {
         e.preventDefault();
-        if(name.length===0|| username.length===0|| pass.length===0 || department.length===0 || confirmpass.length===0 ){
-            seterror(true);
-        }
-        if(confirmpass !== pass) {
-            window.alert("Confirm password is not matched")
-        }
-        
-        else {
-           await Axios.post('http://localhost:3002/api/signup', { username: username, name: name, pass: pass, department: department })
-           .then(res=>{
-            if(res.data === "Error"){
-                window.alert("username already exist")
+        if (
+          name.length === 0 ||
+          username.length === 0 ||
+          pass.length === 0 ||
+          department.length === 0 ||
+          confirmpass.length === 0
+        ) {
+          seterror(true);
+        } else if (confirmpass !== pass) {
+          window.alert('Confirm password does not match');
+        } else {
+          try {
+            const response = await Axios.post('http://localhost:3002/api/signup', {
+              username: username,
+              name: name,
+              pass: pass,
+              department: department,
+            });
+    
+            if (response.data === 'Error') {
+              window.alert('Username already exists');
+            } else {
+              navigate('/');
             }
-            else{
-                navigate('/')
-            }
-         
-           })
-           .catch(error => console.log(error));  
+          } catch (error) {
+            console.log('Error during signup:', error);
+            alert('Error during signup. Please try again later.');
+          }
         }
-        
-
-    }
+      };
+    
     return (
         <>
             <div className='bg-gradient-to-r
@@ -56,7 +64,7 @@ const Signup = () => {
                     <div className="justify-between items-center mb-8 ">
                         <h className="text-center block text-3xl text-gray-800 font-medium">SIGN UP</h>
                     </div>
-                    <div class="mb-4">
+                    <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2">
                             Name
                         </label>
@@ -64,10 +72,10 @@ const Signup = () => {
                             setname(e.target.value)
                         }}
                             placeholder='Name'
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" />
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" />
                     {error &&name.length<=0?<label className='text-red-500 text-sm px-2 '>Name cannot be empty</label>:""}
                     </div>
-                    <div class="mb-4">
+                    <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2">
                             Department
                         </label>
@@ -75,11 +83,11 @@ const Signup = () => {
                             setdepartment(e.target.value)
                         }}
                             placeholder='Department'
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" />
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" />
                     {error &&department.length<=0?<label className='text-red-500 text-sm px-2 '>Department cannot be empty</label>:""}
                     </div>
 
-                    <div class="mb-4">
+                    <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2">
                             Username
                         </label>
@@ -87,21 +95,21 @@ const Signup = () => {
                             setusername(e.target.value)
                         }}
                             placeholder='Username'
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" />
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" />
                     {error &&username.length<=0?<label className='text-red-500 text-sm px-2 '>Username cannot be empty</label>:""}
                     </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" >
+                    <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2" >
                             Password
                         </label>
                         <input onChange={(e) => {
                             setpass(e.target.value)
                         }}
                             placeholder='Password'
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" type="password" />
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" type="password" />
                     {error &&pass.length<=0?<label className='text-red-500 text-sm px-2 '>Password cannot be empty</label>:""}
                     </div>
-                    <div class="mb-6">
+                    <div className="mb-6">
                         <label className="block text-gray-700 text-sm font-bold mb-2">
                             Confirm Password
                         </label>
@@ -109,12 +117,12 @@ const Signup = () => {
                             setconfirmpass(e.target.value)
                         }}
                             placeholder='Confirm Password'
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" />
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" />
                     {error &&confirmpass.length<=0?<label className='text-red-500 text-sm px-2 '>Confirm Password cannot be empty</label>:""}
                     </div>
-                    <div class="mt-2 flex items-center justify-between">
+                    <div className="mt-2 flex items-center justify-between">
                         <button onClick={submitSignup}
-                            class="w-full bg-[#055C9D] hover:bg-blue-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+                            className="w-full bg-blue-500  border-2 rounded-md shadow-2xl text-white  transition ease-in-out delay-150  hover:scale-110 hover:bg-green-500 duration-300 ...  font-bold py-2 px-4  focus:outline-none focus:shadow-outline" type="button">
                             Signup
                         </button>
                     </div>

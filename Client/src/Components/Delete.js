@@ -9,21 +9,18 @@ const Delete = () => {
     const complaint_id = params.complaint_id
    
     const navigate = useNavigate();
-    const complaintDelete= async()=>{
-       await Axios.delete(`http://localhost:3002/singlecomplaint_delete/${complaint_id}`)
-        .then(res=>{
-            if(res.data === "Error"){
-                window.alert("Complaint not deleted")
-            }
-            else{
-                window.alert("complaint deleted")
-                navigate('/Summary')
-            }
-        }
-        )
-    }
+    const complaintDelete = async () => {
+      try {
+        await Axios.delete(`http://localhost:3002/singlecomplaint_delete/${complaint_id}`);
+        window.alert('Complaint deleted');
+        navigate('/Summary');
+      } catch (error) {
+        console.log('Error during complaint delete:', error);
+        window.alert('Error deleting complaint. Please try again later.');
+      }
+    };
   return (
-    <div ><button  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={complaintDelete}>Delete</button></div>
+    <div ><button  className="bg-blue-500 py-2 px-4 border-2 rounded-md shadow-2xl text-white  transition ease-in-out delay-150  hover:scale-110 hover:bg-red-500 duration-300 ..." onClick={complaintDelete}>Delete</button></div>
   )
 }
 
