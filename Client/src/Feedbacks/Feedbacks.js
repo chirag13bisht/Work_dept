@@ -69,12 +69,12 @@ const Feedbacks = () => {
                     </th>
                     <th>
                       <button className="px-6 py-4 " onClick={() => sorting('username')}>
-                        Username
+                      Complaint
                       </button>
                     </th>
                     <th>
                       <button className="px-6 py-4 " onClick={() => sorting('complaint')}>
-                        Complaint
+                        Assigned To
                       </button>
                     </th>
                     <th>
@@ -98,14 +98,14 @@ const Feedbacks = () => {
                   {loading ? (
                     // Show a spinner while loading
                     <tr>
-                      <td colspan="6" className="text-center py-4">
+                      <td colSpan="6" className="text-center py-4">
                         <div className="spinner"><Spinner/></div>
                       </td>
                     </tr>
                   ) : data.length === 0 ? (
                     // Show 'No Data' message when data is empty
                     <tr>
-                      <td colspan="6" className="text-center py-4">
+                      <td colSpan="6" className="text-center py-4">
                         <img className="mx-auto w-1/2 mt-12" src="/images/nodata1.avif" alt="" />
                       </td>
                     </tr>
@@ -115,7 +115,7 @@ const Feedbacks = () => {
                       .filter((item) => {
                         return (
                           search.toLowerCase() === '' ||
-                          item.username.toLowerCase().includes(search) ||
+                          item.assigned_to.toLowerCase().includes(search) ||
                           item.feedbacks.toLowerCase().includes(search) ||
                           item.complaint_id.toLowerCase().includes(search) ||
                           item.complaint.toLowerCase().includes(search) ||
@@ -126,8 +126,8 @@ const Feedbacks = () => {
                       .map((item) => (
                         <tr className="border-b dark:border-neutral-500 text-center" key={item.complaint_id}>
                           <td className="whitespace-nowrap px-6 py-4 transition ease-in-out ">{item.complaint_id}</td>
-                          <td className="whitespace-nowrap px-6 py-4 transition ease-in-out ">{item.username}</td>
                           <td className="whitespace-nowrap px-6 py-4 transition ease-in-out ">{item.complaint}</td>
+                          <td className="whitespace-nowrap px-6 py-4 transition ease-in-out ">{item.assigned_to}</td>
                           <td className="whitespace-nowrap px-6 py-4 transition ease-in-out ">{item.feedbacks}</td>
                           <td className="whitespace-nowrap px-6 py-4 transition ease-in-out  ">{item.feedback_date.substring(0, 10)}</td>
                           <td className="whitespace-nowrap px-6 py-4 transition ease-in-out delay-150  hover:scale-110 duration-300"><div className="rating flex justify-center">

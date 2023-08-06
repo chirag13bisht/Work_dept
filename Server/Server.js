@@ -222,7 +222,7 @@ app.get('/tablejoin/:complaint_id', (req, res) => {
 })
 
 app.get('/feedbackjoin', (req, res) => {
-    db.query("SELECT complaints.username, complaints.complaint ,feedback.feedbacks,feedback.feedback_date,feedback.rate,complaints.complaint_id FROM complaints INNER JOIN feedback ON complaints.complaint_id=feedback.complaint_id",(err, data) => {
+    db.query("SELECT complaints.username, complaints.complaint ,feedback.feedbacks,feedback.feedback_date,feedback.rate,complaints.complaint_id,assigned.assigned_to FROM complaints INNER JOIN feedback ON complaints.complaint_id=feedback.complaint_id INNER JOIN assigned ON assigned.complaint_id=feedback.complaint_id",(err, data) => {
         if (err) {
             console.log(err)
             return res.json("Error")
@@ -317,6 +317,111 @@ app.get('/feedbackdata/:complaint_id', (req, res) => {
         else{
             return res.send({message:"Nodata"})
         }
+    })
+})
+
+app.get('/workers_data/:worker_role', (req, res) => {
+    const worker_role = req.params.worker_role
+    db.query("SELECT * FROM workers WHERE worker_role=?", [worker_role], (err, data) => {
+        if (err) {
+            console.log(err)
+            return res.json("Error")
+        }
+        else {
+            return res.send(data)
+
+        };
+    })
+})
+
+app.put('/complaintdelay/:complaint_id', (req, res) => {
+    const complaint_id = req.params.complaint_id
+    const delay_reason = req.body.delay_reason
+    db.query("UPDATE assigned SET delay_reason=? WHERE complaint_id=?", [delay_reason,complaint_id], (err, data) => {
+        if (err) {
+            console.log(err)
+            return res.json("Error")
+        }
+        if (data) {
+            console.log(data)
+            return res.send({ message: "delayed" })
+
+
+        };
+    })
+})
+
+app.put('/increment_assigned', (req, res) => {
+    const worker_name = req.body.assignedto
+    db.query("UPDATE workers SET complaint_assigned=complaint_assigned+1 WHERE worker_name=?", [worker_name], (err, data) => {
+        if (err) {
+            console.log(err)
+            return res.json("Error")
+        }
+        if (data) {
+            return res.send(data)
+
+
+        };
+    })
+})
+
+app.put('/increment_completed', (req, res) => {
+    const worker_name = req.body.worker
+    console.log(worker_name)
+    db.query("UPDATE workers SET complaint_completed=complaint_completed+1 WHERE worker_name=?", [worker_name], (err, data) => {
+        if (err) {
+            console.log(err)
+            return res.json("Error")
+        }
+        if (data) {
+            return res.send({message:"assigned"})
+
+
+        };
+    })
+})
+
+app.get('/singleworkerdatajoin/:worker_name', (req, res) => {
+    const worker_name = req.params.worker_name
+    db.query("SELECT complaints.complaint, complaints.state, complaints.username,assigned.complaint_id, assigned.assigned_date FROM complaints INNER JOIN assigned ON complaints.complaint_id=assigned.complaint_id WHERE assigned_to=?", [worker_name], (err, data) => {
+        if (err) {
+            console.log(err)
+            return res.json("Error")
+        }
+        else {
+            console.log(data)
+            return res.send(data)
+
+        };
+    })
+})
+
+app.get('/singleworkerdata/:worker_name', (req, res) => {
+    const worker_name = req.params.worker_name
+    db.query("SELECT * FROM workers WHERE worker_name=?", [worker_name], (err, data) => {
+        if (err) {
+            console.log(err)
+            return res.json("Error")
+        }
+        else {
+            return res.send(data)
+
+        };
+    })
+})
+app.get('/singleworkerfeedback/:worker_name', (req, res) => {
+    const worker_name = req.params.worker_name
+    db.query("SELECT feedback.rate, feedback.feedback_date, feedback.feedbacks,assigned.complaint_id  FROM feedback INNER JOIN assigned ON feedback.complaint_id=assigned.complaint_id WHERE assigned_to=?", [worker_name], (err, data) => {
+        if (err) {
+            console.log(err)
+            return res.json("Error")
+        }
+        else {
+            console.log(data)
+            return res.send(data)
+
+        };
     })
 })
 

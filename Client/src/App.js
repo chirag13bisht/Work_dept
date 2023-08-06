@@ -11,6 +11,9 @@ import Feedbacks from './Feedbacks/Feedbacks';
 import ErrorPage from './Error/ErrorPage';
 import Unauthorized from './Components/Unauthorized'
 import RequireAuth from './Components/RequireAuth';
+import WorkerMain from './Workers/WorkerMain';
+import WorkerRole from './Workers/WorkerRole';
+import SingleWorker from './Workers/SingleWorker';
 
 const App = () => {
   const ROLES = {
@@ -37,6 +40,9 @@ const App = () => {
         </Route>
         <Route element={<RequireAuth allowedRoles={[ROLES.Admin]}/>}>
         <Route path="/feedbacks" element={<Feedbacks />} />
+        <Route path="/workers" element={<WorkerMain />} />
+        <Route path="/worker_role/:data" element={<WorkerRole />} />
+        <Route path="/worker_role/:data/:worker_name" element={<SingleWorker />} />
         </Route>
 
         <Route path="*" element={<ErrorPage />} />

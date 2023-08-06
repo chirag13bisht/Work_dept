@@ -82,7 +82,7 @@ const Submenu = ({ isOpen ,ismenuOpen}) => {
 };
 
 const NavLinks = ({isLGScreen, toggleNavUser }) => {
-  const [isHovered, setIsHovered] = useState([false, false, false, false, false, false]);
+  const [isHovered, setIsHovered] = useState([false, false, false, false, false, false,false]);
 
   const handleMouseEnter = (index) => {
     const updatedHoverState = [...isHovered];
@@ -188,6 +188,10 @@ const NavLinks = ({isLGScreen, toggleNavUser }) => {
   } else {
     return (
       <>
+        <NavLink style={isHovered[6] && isLGScreen ? { ...navstyle, ...boxStyleHover } : navstyle}
+          onMouseEnter={() => handleMouseEnter(6)}
+          onMouseLeave={() => handleMouseLeave(6)}
+          className="hover:text-black text-2xl px-4 duration-500" to="/workers">Workers</NavLink>
         <NavLink style={isHovered[0] && isLGScreen ? { ...navstyle, ...boxStyleHover } : navstyle}
           onMouseEnter={() => handleMouseEnter(0)}
           onMouseLeave={() => handleMouseLeave(0)}

@@ -15,7 +15,9 @@ const Assign = () => {
 
   }
   const [showButton, setShowButton] = useState(true);
-
+  const [worker_role, setWorker_Role ]= useState("")
+  const [worker, setWorker ]= useState("")
+  
   const toggleButton = () => {
     setShowButton(!showButton);
   };
@@ -24,14 +26,24 @@ const Assign = () => {
   const complaint_id = params.complaint_id
 
   useEffect(() => {
+    const state = "assigned"
+    setnewstate(state)
+   
+  }, [])
+  
+
+  useEffect(() => {
     const singlecomplaintdata = async () => {
       try {
         const response = await Axios.get(
           `http://localhost:3002/singlecomplaint_data/${complaint_id}`
         );
         setComplaint(response.data[0]);
+        const complaintType = response.data[0].complaint_type;
+        setWorker_Role(complaintType);
         if (Complaint.state !== 'pending') {
           setShowButton(false);
+          
         } else {
           setShowButton(true);
         }
@@ -40,8 +52,25 @@ const Assign = () => {
       }
     };
     singlecomplaintdata();
-  }, [complaint_id,Complaint.state]);
+  }, [complaint_id,Complaint.state,Complaint.complaint_type]);
 
+
+  useEffect(() => {
+    const workersData = async () => {
+      try {
+        console.log(worker_role);
+        const response = await Axios.get(
+          `http://localhost:3002/workers_data/${worker_role}`
+        );
+        setWorker(response.data);
+      } catch (error) {
+        console.log('Error fetching worker data:', error);
+      }
+    };
+    workersData();
+    
+  }, [worker_role]);
+   console.log(worker)
     const [assignedto, setassignedto] = useState("")
     const [newstate, setnewstate] = useState("")
     const navigate = useNavigate();
@@ -50,7 +79,8 @@ const Assign = () => {
       try {
         await Axios.all([
           Axios.put(`http://localhost:3002/assignedstate/${complaint_id}`, { newstate: newstate }),
-          Axios.post(`http://localhost:3002/assigned/${complaint_id}`, { assignedto: assignedto })
+          Axios.post(`http://localhost:3002/assigned/${complaint_id}`, { assignedto: assignedto }),
+          Axios.put("http://localhost:3002/increment_assigned",{  assignedto: assignedto })
         ]);
         window.alert('Complaint is assigned');
         navigate('/Summary');
@@ -71,17 +101,26 @@ const Assign = () => {
                 </h1>
               </div>
         <div className="mb-4 flex  justify-between">
-                                <label className="block text-gray-700 text-sm font-bold mb-2" for="email">Change Status :</label>
-                                <select className='px-10 focus:outline-none focus:shadow-outline border ' id="cars" placeholder='select' defaultValue={'default'} onChange={(e) => {
-                            setnewstate(e.target.value)
-                        }}>         <option value="default" disabled>Select your option</option>
-                                    <option value="assigned">Assigned</option>
-                                  
-                                </select>
+                                <label className="block text-gray-700 text-sm font-bold mb-2" >Status :</label>
+                                <span className='px-10  '  >
+                                    Assigned
+                                </span>
                             </div>
-        <textarea className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="message" rows="5" placeholder="Assiging to" required onChange={(e) => {
-                            setassignedto(e.target.value)
-                        }}></textarea>
+                            <div className="mb-10 mt-5 flex  justify-between">
+                                <label className="block text-gray-700 text-md font-bold mb-2">Select the Worker :</label>
+                                <select
+            className='px-10 focus:outline-none focus:shadow-outline border'
+            id="cars"
+            placeholder='select'
+            defaultValue={'default'}
+            onChange={(e) => { setassignedto(e.target.value) }} // Store the selected worker in state
+          >
+            <option value="default" disabled>Select your option</option>
+            {worker.map((workerData) => (
+              <option key={workerData.worker_name} value={workerData.worker_name}>{workerData.worker_name}</option>
+            ))}
+          </select>
+                            </div>
      <div className='mt-4 mb-4'> <button  className="bg-blue-500 py-2 px-4 border-2 rounded-md mx-3 shadow-2xl text-white  transition ease-in-out delay-150  hover:scale-110 hover:bg-green-500 duration-300 ..." onClick={assignComplaint}>Submit
         </button >
         <button  className="bg-blue-500 py-2 px-4 border-2 rounded-md shadow-2xl text-white mx-3 transition ease-in-out delay-150  hover:scale-110 hover:bg-red-500 duration-300 ..." onClick={()=>{cancelButtons();toggleButton()}}>cancel</button></div></div>:""}

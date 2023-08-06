@@ -18,6 +18,7 @@ const Status = () => {
   const [assignData, setAssignData] = useState({});
   const [feedbackCheck, setFeedbackCheck] = useState(false);
   const [loading, setLoading] = useState(true); // Add loading state
+  const [reason, setReason ] = useState(false)
 
   const params = useParams();
   const complaintId = params.complaint_id;
@@ -64,6 +65,12 @@ const Status = () => {
           `http://localhost:3002/assignCheck/${complaintId}`
         );
         setAssignData(assignCheckRes.data[0]);
+        if(assignCheckRes.data[0].delay_reason==="None"){
+          setReason(false)
+        }
+        else{
+          setReason(true)
+        }
       } catch (error) {
         // Handle error here (e.g., show an error message)
         console.error('Error checking assignment:', error);
@@ -110,10 +117,10 @@ const Status = () => {
                     <label>Name</label>
                     <span>{joindata.name}</span>
                   </div>
-                  <div className='flex justify-between mb-4'>
+                  {!role ? <div className='flex justify-between mb-4'>
                     <label>Username</label>
                     <span>{complaint.username}</span>
-                  </div>
+                  </div>:null}
                   <div className='flex justify-between mb-4'>
                     <label>Department</label>
                     <span>{joindata.department}</span>
@@ -141,10 +148,26 @@ const Status = () => {
                     <span>{complaint.state}</span>
                   </div>
                   {assigned || complete ? (
+                    <div className="divide-y-2">
                     <div className='pt-2 flex justify-between'>
                       <label>Assigned To</label>
                       <span>{assignData.assigned_to}</span>
                     </div>
+                    {assigned&&reason?(<div className='pt-2 mt-4 '>
+                    <h1 className='text-center'>Sorry Your Complaint is Delayed</h1>
+                    <div  className='pt-4 flex justify-between'>
+                    <label>Reason:</label>
+                    <span className='text-end'>{assignData.delay_reason.length > 30 ? (
+                      <div>
+                        {assignData.delay_reason.substr(0, 30)}
+                        <br />
+                        {assignData.delay_reason.substr(30, 90)}
+                      </div>
+                    ) : (
+                      assignData.delay_reason
+                    )}</span></div>
+                  </div>):null}
+                  </div>
                   ) : null}
                 </div>
               </div>
