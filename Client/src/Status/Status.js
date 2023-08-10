@@ -177,7 +177,7 @@ const Status = () => {
               <Delete />
             </div>
             <div className='mx-auto text-center mb-10 mt-10 '>
-              {assigned && role !== 'General' ? <Complete /> : null}
+              {assigned && !role ? <Complete /> : null}
             </div>
             <div className='mx-auto text-center mt-3'>
               {role ? <Update /> : <Assign />}

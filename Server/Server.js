@@ -192,6 +192,21 @@ app.put('/newcomplaint/:complaint_id', verifyUser, (req, res) => {
     })
 })
 
+app.delete('/singlecomplaint_delete/:complaint_id', (req, res) => {
+    const complaint_id = req.params.complaint_id
+    db.query("DELETE FROM complaints WHERE complaint_id= ?", [complaint_id], (err, data) => {
+        if (err) {
+            console.log(err)
+            return res.json("Error")
+        }
+        if (data) {
+            return res.send(data)
+
+
+        };
+    })
+})
+
 app.get('/allcomplaint_data', verifyUser, (req, res) => {
     db.query("SELECT * FROM  complaints", (err, data) => {
         if (err) {

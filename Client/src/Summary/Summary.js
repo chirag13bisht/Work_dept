@@ -95,6 +95,18 @@ const Summary = () => {
         }
     }
 
+    const customSort = (a, b) => {
+        const statusOrder = {
+            pending: 1,
+            assigned: 2,
+            complete: 3,
+        };
+    
+        return statusOrder[a.state] - statusOrder[b.state];
+    };
+ 
+   
+
     if (role === "General") {
         return (
 
@@ -131,7 +143,15 @@ const Summary = () => {
                                                     || item.complaint_id.toLowerCase().includes(search)
                                                     || item.state.toLowerCase().includes(search)
                                                     || item.complaint.toLowerCase().includes(search));;
-                                        }).map((item) => {
+                                        }).sort((a, b) => {
+                                            if (a.state === 'pending' && b.state !== 'pending') {
+                                                return -1;
+                                            }
+                                            if (a.state !== 'pending' && b.state === 'pending') {
+                                                return 1;
+                                            }
+                                            return customSort(a, b);})
+                                        .map((item) => {
                                             return (
                                                 <tr className="border-b dark:border-neutral-500 text-center" key={item.complaint_id}>
                                                     <td className="whitespace-nowrap px-6 py-4 font-sans" >{item.complaint_id}</td>
@@ -146,7 +166,7 @@ const Summary = () => {
                                                     ) : (
                                                         item.complaint
                                                     )}</td>
-                                                    <td className="whitespace-nowrap px-6 py-4">{item.state}</td>
+                                                    <td className={`border-b dark:border-neutral-500 text-center font-bold ${item.state === 'pending' ? 'text-red-700' : item.state === 'assigned' ? 'text-yellow-700' : item.state === 'complete' ? 'text-green-700' : ''}`}>{item.state}</td>
                                                     <td className="whitespace-nowrap px-6 py-4">  <Link to={`/Status/${item.complaint_id}`}><button className="bg-blue-500 py-2 px-3 border-2 rounded-md shadow-2xl text-white  transition ease-in-out delay-150  hover:scale-110 hover:bg-green-500 duration-300 ...">Check</button> </Link></td>
                                                 </tr>
                                             )
@@ -198,7 +218,15 @@ const Summary = () => {
                                                     || item.complaint_id.toLowerCase().includes(search)
                                                     || item.state.toLowerCase().includes(search)
                                                     || item.complaint.toLowerCase().includes(search));
-                                        }).map((item) => {
+                                        }).sort((a, b) => {
+                                            if (a.state === 'pending' && b.state !== 'pending') {
+                                                return -1;
+                                            }
+                                            if (a.state !== 'pending' && b.state === 'pending') {
+                                                return 1;
+                                            }
+                                            return customSort(a, b);})
+                                            .map((item) => {  
                                             return (
                                                 <tr className="border-b dark:border-neutral-500 text-center " key={item.complaint_id}>
                                                     <td className="whitespace-nowrap px-6 py-4" >{item.complaint_id}</td>
@@ -213,7 +241,7 @@ const Summary = () => {
                                                     ) : (
                                                         item.complaint
                                                     )}</td>
-                                                    <td className="whitespace-nowrap px-6 py-4">{item.state}</td>
+                                                    <td className={`border-b dark:border-neutral-500 text-center font-bold ${item.state === 'pending' ? 'text-red-700' : item.state === 'assigned' ? 'text-yellow-700' : item.state === 'complete' ? 'text-green-700' : ''}`}>{item.state}</td>
                                                      <td className="whitespace-nowrap px-6 py-4"> <Link to={`/Status/${item.complaint_id}`}><button className="bg-blue-500 py-2 px-3 border-2 rounded-md shadow-2xl text-white  transition ease-in-out delay-150  hover:scale-110 hover:bg-green-500 duration-300 ...">Check</button></Link></td> 
                                                 </tr>
                                             )
